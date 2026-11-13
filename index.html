@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)file:///C:/Users/Charin/Downloads/Html.html -->
+<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#152c3b">
+  <title>Hong Kong Getaway | 4–6 ธ.ค. 2569</title>
+
+  <link rel="stylesheet" href="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/leaflet.css" crossorigin="">
+  <style>
+    :root {
+      --ink: #183344;
+      --muted: #6d7e87;
+      --paper: #f5f7f5;
+      --card: #fff;
+      --teal: #1b827a;
+      --teal-light: #e4f3ef;
+      --gold: #e7b65d;
+      --line: #e5ece9;
+      --shadow: 0 12px 34px rgba(24, 51, 68, .08);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Noto Sans Thai", sans-serif;
+    }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    .hero {
+      color: #fff;
+      background:
+        radial-gradient(ellipse at 85% 10%, rgba(231,182,93,.34), transparent 35%),
+        linear-gradient(130deg, #17384a 0%, #1b666a 100%);
+      padding: 24px 18px 25px;
+    }
+    .hero-inner, main, .nav-inner { width: min(1100px, 100%); margin: auto; }
+    .eyebrow { color: #c8e9dd; font-size: .82rem; letter-spacing: .04em; }
+    h1 { margin: 8px 0 6px; font-size: clamp(1.75rem, 5vw, 2.7rem); line-height: 1.15; }
+    .hero p { margin: 0; color: #e4f0ed; }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.11);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: .83rem;
+    }
+
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner { display: flex; gap: 5px; padding: 8px 12px; overflow-x: auto; }
+    .nav-btn {
+      flex: 1 0 auto;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 13px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .nav-btn.active { color: var(--teal); background: var(--teal-light); }
+
+    main { padding: 20px 15px 50px; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .section-title { margin: 2px 0 14px; font-size: 1.35rem; }
+    .subtle { color: var(--muted); font-size: .92rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .trip-overview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+    .overview-card { padding: 16px; }
+    .overview-card .label { color: var(--muted); font-size: .8rem; }
+    .overview-card strong { display: block; margin-top: 5px; font-size: 1rem; }
+    .overview-card small { display: block; margin-top: 4px; color: var(--muted); }
+
+    .day-selector { display: flex; gap: 9px; overflow-x: auto; padding: 2px 1px 12px; }
+    .day-btn {
+      min-width: 115px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 11px 13px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .day-btn.active { border-color: var(--teal); background: var(--teal); color: #fff; }
+    .day-btn span { display: block; font-weight: 800; }
+    .day-btn small { opacity: .8; }
+
+    .day-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 10px 0 16px;
+    }
+    .day-heading h2 { margin: 0; font-size: 1.35rem; }
+    .day-heading p { margin: 4px 0 0; color: var(--muted); }
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      text-decoration: none;
+      border-radius: 11px;
+      padding: 9px 12px;
+      color: #fff;
+      background: var(--teal);
+      font-weight: 750;
+      font-size: .86rem;
+    }
+    .timeline { position: relative; margin-left: 6px; padding-left: 23px; }
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 5px; top: 12px; bottom: 20px;
+      width: 2px;
+      background: #cfe4dd;
+    }
+    .event {
+      position: relative;
+      margin-bottom: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .event:hover { transform: translateY(-1px); }
+    .event:before {
+      content: "";
+      position: absolute;
+      left: -24px; top: 21px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 3px solid var(--paper);
+      background: var(--teal);
+    }
+    .event-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .event-time { color: var(--teal); font-size: .84rem; font-weight: 800; }
+    .event h3 { margin: 3px 0 5px; font-size: 1.03rem; }
+    .event p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.55; }
+    .event .tag {
+      flex: 0 0 auto;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f0f5f3;
+      color: #527168;
+      font-size: .72rem;
+    }
+    .event-actions { display: flex; gap: 8px; margin-top: 11px; }
+    .small-link {
+      display: inline-block;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 7px 9px;
+      color: var(--teal);
+      font-size: .8rem;
+      font-weight: 750;
+    }
+
+    .notice {
+      margin: 15px 0;
+      padding: 13px 15px;
+      border-left: 4px solid var(--gold);
+      border-radius: 12px;
+      background: #fff8e9;
+      color: #70572e;
+      font-size: .88rem;
+      line-height: 1.55;
+    }
+
+    .map-panel { overflow: hidden; }
+    .map-toolbar { padding: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .filter-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: white;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .filter-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+    #map { height: min(67vh, 650px); min-height: 390px; width: 100%; }
+    .map-caption { padding: 11px 14px; color: var(--muted); font-size: .82rem; }
+
+    .route-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .route-card { padding: 17px; }
+    .route-card h3 { margin: 0 0 8px; font-size: 1rem; }
+    .route-card p { margin: 0; color: var(--muted); line-height: 1.65; font-size: .91rem; }
+    .line-pill {
+      display: inline-block; margin: 3px 3px 3px 0; padding: 3px 8px;
+      border-radius: 999px; background: #eef4f2; color: #345c55;
+      font-size: .78rem; font-weight: 800;
+    }
+
+    .checklist { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .check-group { padding: 16px; }
+    .check-group h3 { margin: 0 0 10px; font-size: 1rem; }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 9px 0; border-top: 1px solid #f0f2f1;
+      color: #405762; line-height: 1.4; cursor: pointer;
+    }
+    .check-item input { width: 19px; height: 19px; accent-color: var(--teal); flex: 0 0 auto; }
+    .check-item.done span { text-decoration: line-through; color: #92a09f; }
+    .progress-wrap { padding: 15px; margin-bottom: 14px; }
+    .progress-label { display: flex; justify-content: space-between; gap: 10px; font-weight: 750; }
+    .progress-track { height: 9px; margin-top: 10px; border-radius: 999px; overflow: hidden; background: #e8efec; }
+    .progress-bar { height: 100%; width: 0; background: var(--teal); transition: width .2s; }
+    .reset-btn {
+      margin-top: 14px; border: 0; background: transparent; color: #a04e42;
+      font-weight: 750; padding: 8px 0; cursor: pointer;
+    }
+    footer { padding: 0 15px 28px; text-align: center; color: var(--muted); font-size: .78rem; }
+
+    @media (max-width: 680px) {
+      .trip-overview { grid-template-columns: 1fr; gap: 8px; }
+      .overview-card { padding: 12px 14px; }
+      .overview-card strong { display: inline; margin-left: 6px; }
+      .overview-card small { display: inline; margin-left: 6px; }
+      .route-grid, .checklist { grid-template-columns: 1fr; }
+      .day-heading { flex-direction: column; }
+      #map { height: 58vh; min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">TRAVEL COMPANION · HONG KONG</div>
+      <h1>ฮ่องกง 3 วัน 2 คืน</h1>
+      <p>ทริปคู่รัก · ไหว้พระ · ดิสนีย์แลนด์ · คาเฟ่และวิวอ่าว</p>
+      <div class="hero-chips">
+        <span class="chip">4–6 ธันวาคม 2569</span>
+        <span class="chip">พัก Regal Kowloon Hotel</span>
+        <span class="chip">UO735 ไป · UO734 กลับ</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sticky-nav" aria-label="เมนูหลัก">
+    <div class="nav-inner">
+      <button class="nav-btn" data-view="itinerary">🗓️ แผนรายวัน</button>
+      <button class="nav-btn active" data-view="map-view">📍 แผนที่</button>
+      <button class="nav-btn" data-view="routes">🚇 เส้นทาง MTR</button>
+      <button class="nav-btn" data-view="checklist">✅ Checklist</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="view" id="itinerary">
+      <div class="trip-overview">
+        <div class="card overview-card">
+          <span class="label">ขาไป</span>
+          <strong>HK Express UO735</strong>
+          <small>4 ธ.ค. · BKK 00:35 → HKG T1 04:30</small>
+        </div>
+        <div class="card overview-card">
+          <span class="label">ที่พัก</span>
+          <strong>Regal Kowloon Hotel</strong>
+          <small>71 Mody Road, Tsim Sha Tsui</small>
+        </div>
+        <div class="card overview-card">
+          <span class="label">ขากลับ</span>
+          <strong>HK Express UO734</strong>
+          <small>6 ธ.ค. · HKG 21:40 → BKK 23:40</small>
+        </div>
+      </div>
+
+      <div class="day-selector" id="day-selector">
+        <button class="day-btn active" data-day="1">
+          <span>วันที่ 1</span><small>ศุกร์ 4 ธ.ค. 2569</small>
+        </button>
+        <button class="day-btn " data-day="2">
+          <span>วันที่ 2</span><small>เสาร์ 5 ธ.ค. 2569</small>
+        </button>
+        <button class="day-btn " data-day="3">
+          <span>วันที่ 3</span><small>อาทิตย์ 6 ธ.ค. 2569</small>
+        </button></div>
+      <div id="day-content">
+        <div class="day-heading">
+          <div><h2>สายมู 4 พิกัด · วิวอ่าววิกตอเรีย</h2><p>ศุกร์ 4 ธ.ค. 2569 · วันแน่น แนะนำฝากกระเป๋าและออกเดินทางตามเวลา</p></div>
+          <a class="map-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Hong%20Kong%20International%20Airport">เปิด Google Maps ↗</a>
+        </div>
+        <div class="timeline">
+          
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">04:30–07:00</div><h3>ถึงสนามบินฮ่องกง · ไปโรงแรมฝากกระเป๋า</h3></div>
+                <span class="tag">เดินทาง</span>
+              </div>
+              <p>ถึง HKG Terminal 1 ผ่าน ตม. แล้วเดินทางเข้า Tsim Sha Tsui ด้วย A21 หรือ Airport Express</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Hong%20Kong%20International%20Airport">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">07:30–08:30</div><h3>อาหารเช้า · Australia Dairy Company</h3></div>
+                <span class="tag">อาหาร</span>
+              </div>
+              <p>มื้อเช้าสไตล์ฮ่องกงย่าน Jordan ลองมักกะโรนีซุปแฮม ไข่ และชานม</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Australia%20Dairy%20Company%2C%20Hong%20Kong">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">09:00–10:00</div><h3>วัดเจ้าแม่กวนอิม ฮ่องฮำ</h3></div>
+                <span class="tag">ไหว้พระ</span>
+              </div>
+              <p>แวะสักการะวัดเก่าแก่ในย่าน Hung Hom ตามความเชื่อเรื่องการเงินและธุรกิจ</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Kwun%20Yum%20Temple%20Hung%20Hom">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">10:30–12:00</div><h3>วัดแชกงหมิว · Sha Tin</h3></div>
+                <span class="tag">ไหว้พระ</span>
+              </div>
+              <p>เดินทางไปวัดแชกงหมิว และสักการะกังหันนำโชค</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Che%20Kung%20Temple%20Hong%20Kong">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">12:00–13:30</div><h3>มื้อกลางวันแถว Tai Wai</h3></div>
+                <span class="tag">อาหาร</span>
+              </div>
+              <p>พักรับประทานอาหารบริเวณสถานี Tai Wai ก่อนเดินทางต่อ</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Tai%20Wai%20Station%20Hong%20Kong">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">13:45–15:30</div><h3>วัดหวังต้าเซียน</h3></div>
+                <span class="tag">ไหว้พระ</span>
+              </div>
+              <p>สักการะวัด และเยี่ยมชมจุดขอพรด้านความรักตามความเชื่อ</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Wong%20Tai%20Sin%20Temple%20Hong%20Kong">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">16:00–18:30</div><h3>ศาลเจ้า Repulse Bay</h3></div>
+                <span class="tag">ไหว้พระ</span>
+              </div>
+              <p>เดินทางต่อไป Repulse Bay เพื่อชมชายหาดและสักการะศาลเจ้าริมทะเล</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Kwun%20Yam%20Shrine%20Repulse%20Bay">📍 นำทาง</a>
+              </div>
+            </article>
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">19:00 เป็นต้นไป</div><h3>เช็กอิน · ดินเนอร์ · Avenue of Stars</h3></div>
+                <span class="tag">พักผ่อน</span>
+              </div>
+              <p>กลับโรงแรม เช็กอินและรับประทานมื้อเย็น จากนั้นเดินเล่นริมน้ำ หากยังมีแรง</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Avenue%20of%20Stars%20Hong%20Kong">📍 นำทาง</a>
+              </div>
+            </article>
+        </div></div>
+      <div class="notice">
+        กำหนดการเที่ยวบิน การแสดง เวลาเปิดวัด ร้านค้า และเส้นทางขนส่งอาจเปลี่ยนแปลง
+        โปรดตรวจสอบข้อมูลจากผู้ให้บริการก่อนออกเดินทาง โดยเฉพาะช่วงวันหยุด
+      </div>
+    </section>
+
+    <section class="view active" id="map-view">
+      <h2 class="section-title">แผนที่ทริป</h2>
+      <p class="subtle">แตะหมุดเพื่อดูชื่อสถานที่ แล้วเลือก “นำทาง” เพื่อเปิด Google Maps</p>
+      <div class="card map-panel">
+        <div class="map-toolbar" id="map-filters">
+        <strong style="margin-right:4px">แสดง:</strong>
+        <button class="filter-btn active" data-map-day="0">ทุกวัน</button>
+        <button class="filter-btn " data-map-day="1">วันที่ 1</button><button class="filter-btn " data-map-day="2">วันที่ 2</button><button class="filter-btn " data-map-day="3">วันที่ 3</button></div>
+        <div id="map" aria-label="แผนที่สถานที่ท่องเที่ยว" class="leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative; outline-style: none;"><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(165px, -24px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(406px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(406px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(150px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(662px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(406px, 326px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(150px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(662px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(150px, 326px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894(2).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(662px, 326px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-106px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(918px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-106px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(918px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894(3).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-106px, 326px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894(4).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(918px, 326px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/893(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-362px, 70px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/892(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-362px, -186px, 0px); opacity: 1;"><img alt="" src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/894(5).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-362px, 326px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"></div><div class="leaflet-pane leaflet-shadow-pane"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(542px, 276px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(537px, 269px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(559px, 270px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(556px, 160px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(546px, 163px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(568px, 211px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(571px, 377px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(537px, 288px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(347px, 256px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(532px, 287px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(505px, 301px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(537px, 279px, 0px);"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-shadow.png" class="leaflet-marker-shadow leaflet-zoom-animated" alt="" style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; transform: translate3d(168px, 264px, 0px);"></div><div class="leaflet-pane leaflet-marker-pane"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(542px, 276px, 0px); z-index: 276;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(537px, 269px, 0px); z-index: 269;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(559px, 270px, 0px); z-index: 270;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(556px, 160px, 0px); z-index: 160;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(546px, 163px, 0px); z-index: 163;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(568px, 211px, 0px); z-index: 211;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(571px, 377px, 0px); z-index: 377;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(537px, 288px, 0px); z-index: 288;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(347px, 256px, 0px); z-index: 256;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(532px, 287px, 0px); z-index: 287;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(505px, 301px, 0px); z-index: 301;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(537px, 279px, 0px); z-index: 279;"><img src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/marker-icon-2x.png" class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" alt="Marker" tabindex="0" role="button" style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; transform: translate3d(168px, 264px, 0px); z-index: 264;"></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(428251px, 228807px, 0px) scale(1024);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="file:///C:/Users/Charin/Downloads/Html.html#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true">+</span></a><a class="leaflet-control-zoom-out" href="file:///C:/Users/Charin/Downloads/Html.html#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true">−</span></a></div></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-attribution leaflet-control"><a href="https://leafletjs.com/" title="A JavaScript library for interactive maps"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" class="leaflet-attribution-flag"><path fill="#4C7BE1" d="M0 0h12v4H0z"></path><path fill="#FFD500" d="M0 4h12v3H0z"></path><path fill="#E0BC00" d="M0 7h12v1H0z"></path></svg> Leaflet</a> <span aria-hidden="true">|</span> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></div></div></div></div>
+        <div class="map-caption">แผนที่ © OpenStreetMap · ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อโหลดแผนที่</div>
+      </div>
+    </section>
+
+    <section class="view" id="routes">
+      <h2 class="section-title">สรุปเส้นทางเดินทาง</h2>
+      <p class="subtle">เส้นทางสรุปตามแผนทริป ควรเช็กประกาศสถานีและเวลาเดินรถในวันเดินทาง</p>
+      <div class="route-grid">
+        <article class="card route-card">
+          <h3>สนามบิน → โรงแรม</h3>
+          <p>เลือก Airport Bus <span class="line-pill">A21</span> หรือ Airport Express
+          จากสนามบินไปย่านเกาลูน แล้วเดินทางต่อไปโรงแรมเพื่อฝากสัมภาระ</p>
+        </article>
+        <article class="card route-card">
+          <h3>โรงแรม → วัดแชกงหมิว</h3>
+          <p>จาก Hung Hom ใช้ <span class="line-pill">Tuen Ma Line</span>
+          มุ่งหน้าไป Tai Wai แล้วเดินต่อไปวัด</p>
+        </article>
+        <article class="card route-card">
+          <h3>Tai Wai → วัดหวังต้าเซียน</h3>
+          <p><span class="line-pill">Tuen Ma Line</span> ไป Diamond Hill
+          แล้วเปลี่ยนเป็น <span class="line-pill">Kwun Tong Line</span>
+          ไป Wong Tai Sin</p>
+        </article>
+        <article class="card route-card">
+          <h3>วัดหวังต้าเซียน → Repulse Bay</h3>
+          <p>ใช้ MTR ไป Admiralty แล้วต่อรถบัส <span class="line-pill">6</span>
+          <span class="line-pill">6A</span> <span class="line-pill">6X</span>
+          หรือ <span class="line-pill">260</span> ตามบริการในวันนั้น</p>
+        </article>
+        <article class="card route-card">
+          <h3>Tsim Sha Tsui → Disneyland</h3>
+          <p><span class="line-pill">Tsuen Wan Line</span> ไป Lai King,
+          เปลี่ยนเป็น <span class="line-pill">Tung Chung Line</span> ไป Sunny Bay
+          แล้วต่อ <span class="line-pill">Disneyland Resort Line</span></p>
+        </article>
+        <article class="card route-card">
+          <h3>Tsim Sha Tsui ↔ Central</h3>
+          <p>ข้ามอ่าวด้วย <span class="line-pill">Star Ferry</span>
+          หรือใช้ MTR ตามจุดหมายและเวลาที่สะดวก</p>
+        </article>
+        <article class="card route-card">
+          <h3>โรงแรม → สนามบิน (วันกลับ)</h3>
+          <p>รถบัส <span class="line-pill">A21</span> หรือ MTR/Airport Express
+          เผื่อเวลาเดินทางและขั้นตอนเช็กอินสนามบินให้เพียงพอ</p>
+        </article>
+        <article class="card route-card">
+          <h3>ทิปเดินทาง</h3>
+          <p>เตรียม Octopus Card สำหรับ MTR และรถบัส ตรวจสอบทางออกสถานี
+          และเผื่อเวลาสำหรับการเปลี่ยนสายหรือความหนาแน่นของผู้โดยสาร</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="checklist">
+      <h2 class="section-title">Checklist ก่อนและระหว่างทริป</h2>
+      <p class="subtle">สถานะจะบันทึกอัตโนมัติในเบราว์เซอร์บนอุปกรณ์นี้</p>
+      <div class="card progress-wrap">
+        <div class="progress-label"><span>ความคืบหน้า</span><span id="progress-text">0/12</span></div>
+        <div class="progress-track"><div class="progress-bar" id="progress-bar" style="width: 0%;"></div></div>
+      </div>
+      <div class="checklist" id="checklist-content">
+        <section class="card check-group">
+          <h3>เอกสารและการเดินทาง</h3>
+          <label class="check-item ">
+              <input type="checkbox" data-item="หนังสือเดินทางและเอกสารเดินทาง">
+              <span>หนังสือเดินทางและเอกสารเดินทาง</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="ตรวจสอบเที่ยวบิน UO735 / UO734 และอาคารผู้โดยสาร">
+              <span>ตรวจสอบเที่ยวบิน UO735 / UO734 และอาคารผู้โดยสาร</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="บัตร Octopus หรือวิธีชำระค่าเดินทาง">
+              <span>บัตร Octopus หรือวิธีชำระค่าเดินทาง</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="ประกันเดินทางและข้อมูลติดต่อฉุกเฉิน">
+              <span>ประกันเดินทางและข้อมูลติดต่อฉุกเฉิน</span>
+            </label>
+        </section>
+        <section class="card check-group">
+          <h3>ของใช้จำเป็น</h3>
+          <label class="check-item ">
+              <input type="checkbox" data-item="เสื้อแจ็กเก็ตหรือสเวตเตอร์">
+              <span>เสื้อแจ็กเก็ตหรือสเวตเตอร์</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="รองเท้าเดินสบายและถุงเท้าสำรอง">
+              <span>รองเท้าเดินสบายและถุงเท้าสำรอง</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="สายชาร์จและแบตเตอรี่สำรอง">
+              <span>สายชาร์จและแบตเตอรี่สำรอง</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="ยาประจำตัวและของใช้ส่วนตัว">
+              <span>ยาประจำตัวและของใช้ส่วนตัว</span>
+            </label>
+        </section>
+        <section class="card check-group">
+          <h3>ก่อนออกจากที่พัก</h3>
+          <label class="check-item ">
+              <input type="checkbox" data-item="ตรวจสอบพยากรณ์อากาศและประกาศการเดินทาง">
+              <span>ตรวจสอบพยากรณ์อากาศและประกาศการเดินทาง</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="ยืนยันเวลาเปิดวัด ร้านอาหาร และสวนสนุก">
+              <span>ยืนยันเวลาเปิดวัด ร้านอาหาร และสวนสนุก</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="เตรียมเงินสด/บัตร และตรวจสอบแบตเตอรี่มือถือ">
+              <span>เตรียมเงินสด/บัตร และตรวจสอบแบตเตอรี่มือถือ</span>
+            </label><label class="check-item ">
+              <input type="checkbox" data-item="เช็กเอาต์และฝากกระเป๋าตามเวลาของโรงแรม">
+              <span>เช็กเอาต์และฝากกระเป๋าตามเวลาของโรงแรม</span>
+            </label>
+        </section></div>
+      <button class="reset-btn" id="reset-checklist">ล้างสถานะ Checklist ทั้งหมด</button>
+    </section>
+  </main>
+
+  <footer>Hong Kong Getaway · 4–6 December 2026</footer>
+
+  <script src="./Hong Kong Getaway _ 4–6 ธ.ค. 2569_files/leaflet.js.download" crossorigin=""></script>
+  <script>
+    const days = [
+      {
+        id: 1, date: "ศุกร์ 4 ธ.ค. 2569", title: "สายมู 4 พิกัด · วิวอ่าววิกตอเรีย",
+        summary: "วันแน่น แนะนำฝากกระเป๋าและออกเดินทางตามเวลา",
+        events: [
+          {time:"04:30–07:00", title:"ถึงสนามบินฮ่องกง · ไปโรงแรมฝากกระเป๋า", type:"เดินทาง",
+           desc:"ถึง HKG Terminal 1 ผ่าน ตม. แล้วเดินทางเข้า Tsim Sha Tsui ด้วย A21 หรือ Airport Express",
+           place:"Hong Kong International Airport"},
+          {time:"07:30–08:30", title:"อาหารเช้า · Australia Dairy Company", type:"อาหาร",
+           desc:"มื้อเช้าสไตล์ฮ่องกงย่าน Jordan ลองมักกะโรนีซุปแฮม ไข่ และชานม",
+           place:"Australia Dairy Company, Hong Kong"},
+          {time:"09:00–10:00", title:"วัดเจ้าแม่กวนอิม ฮ่องฮำ", type:"ไหว้พระ",
+           desc:"แวะสักการะวัดเก่าแก่ในย่าน Hung Hom ตามความเชื่อเรื่องการเงินและธุรกิจ",
+           place:"Kwun Yum Temple Hung Hom"},
+          {time:"10:30–12:00", title:"วัดแชกงหมิว · Sha Tin", type:"ไหว้พระ",
+           desc:"เดินทางไปวัดแชกงหมิว และสักการะกังหันนำโชค",
+           place:"Che Kung Temple Hong Kong"},
+          {time:"12:00–13:30", title:"มื้อกลางวันแถว Tai Wai", type:"อาหาร",
+           desc:"พักรับประทานอาหารบริเวณสถานี Tai Wai ก่อนเดินทางต่อ",
+           place:"Tai Wai Station Hong Kong"},
+          {time:"13:45–15:30", title:"วัดหวังต้าเซียน", type:"ไหว้พระ",
+           desc:"สักการะวัด และเยี่ยมชมจุดขอพรด้านความรักตามความเชื่อ",
+           place:"Wong Tai Sin Temple Hong Kong"},
+          {time:"16:00–18:30", title:"ศาลเจ้า Repulse Bay", type:"ไหว้พระ",
+           desc:"เดินทางต่อไป Repulse Bay เพื่อชมชายหาดและสักการะศาลเจ้าริมทะเล",
+           place:"Kwun Yam Shrine Repulse Bay"},
+          {time:"19:00 เป็นต้นไป", title:"เช็กอิน · ดินเนอร์ · Avenue of Stars", type:"พักผ่อน",
+           desc:"กลับโรงแรม เช็กอินและรับประทานมื้อเย็น จากนั้นเดินเล่นริมน้ำ หากยังมีแรง",
+           place:"Avenue of Stars Hong Kong"}
+        ]
+      },
+      {
+        id: 2, date: "เสาร์ 5 ธ.ค. 2569", title: "เต็มวัน Hong Kong Disneyland",
+        summary: "ตรวจสอบเวลาเปิดสวนสนุกและกำหนดการโชว์ก่อนเดินทาง",
+        events: [
+          {time:"08:30–10:00", title:"อาหารเช้าและเดินทางไป Disneyland", type:"เดินทาง",
+           desc:"รับประทานติ่มซำใกล้โรงแรม แล้วเดินทางผ่าน Lai King และ Sunny Bay",
+           place:"Hong Kong Disneyland"},
+          {time:"10:00–19:30", title:"Hong Kong Disneyland", type:"สวนสนุก",
+           desc:"วางแผนเที่ยว World of Frozen, Frozen Ever After, Big Grizzly Mountain และ Mystic Point",
+           place:"Hong Kong Disneyland"},
+          {time:"ช่วงเย็น", title:"อาหารเย็นในสวนสนุก", type:"อาหาร",
+           desc:"เลือกร้านอาหารในสวนสนุกตามความสะดวกและเวลารอ",
+           place:"Hong Kong Disneyland"},
+          {time:"ก่อนปิดสวนสนุก", title:"ชมโชว์กลางคืน Momentous*", type:"โชว์",
+           desc:"เลือกจุดชมและเผื่อเวลารอ โปรดตรวจสอบรอบแสดงในวันที่เดินทางจากประกาศทางการ",
+           place:"Hong Kong Disneyland Castle of Magical Dreams"},
+          {time:"หลังจบโชว์", title:"เดินทางกลับโรงแรม", type:"เดินทาง",
+           desc:"กลับด้วย Disneyland Resort Line ต่อ MTR ตามเส้นทางเดิม",
+           place:"Regal Kowloon Hotel"}
+        ]
+      },
+      {
+        id: 3, date: "อาทิตย์ 6 ธ.ค. 2569", title: "คาเฟ่ · ช้อปปิ้ง · เดินทางกลับ",
+        summary: "ฝากกระเป๋าหลังเช็กเอาต์ และเผื่อเวลาเดินทางไปสนามบิน",
+        events: [
+          {time:"09:00–12:00", title:"Star Ferry · Hollywood Road · คาเฟ่", type:"คาเฟ่",
+           desc:"ข้ามฟากไปฝั่ง Central หรือ Sheung Wan เดินชมย่านและแวะ NOC Coffee หรือ Halfway Coffee",
+           place:"Hollywood Road Hong Kong"},
+          {time:"12:00–16:30", title:"มื้อกลางวันและซื้อของฝาก", type:"ช้อปปิ้ง",
+           desc:"เลือกซื้อคุกกี้ Jenny Bakery และทาร์ตไข่ Bakehouse ตามเวลาที่มี",
+           place:"Jenny Bakery Tsim Sha Tsui"},
+          {time:"ก่อน 12:00", title:"เช็กเอาต์ · ฝากกระเป๋าที่โรงแรม", type:"โรงแรม",
+           desc:"เช็กเอาต์ตามเงื่อนไขโรงแรม ฝากสัมภาระไว้หากโรงแรมให้บริการ",
+           place:"Regal Kowloon Hotel"},
+          {time:"16:30–19:00", title:"เดินทางไปสนามบิน", type:"เดินทาง",
+           desc:"ออกเดินทางไปสนามบินด้วย A21 หรือ MTR/Airport Express โดยเผื่อเวลาเดินทาง",
+           place:"Hong Kong International Airport"},
+          {time:"21:40–23:40", title:"บินกลับกรุงเทพฯ · UO734", type:"เที่ยวบิน",
+           desc:"เที่ยวบินจากฮ่องกงไปสุวรรณภูมิ โปรดตรวจสอบอาคารผู้โดยสารและเวลาเช็กอินกับสายการบิน",
+           place:"Hong Kong International Airport"}
+        ]
+      }
+    ];
+
+    const locations = [
+      {day:1, name:"Regal Kowloon Hotel", place:"Regal Kowloon Hotel, Hong Kong", lat:22.3006, lng:114.1755},
+      {day:1, name:"Australia Dairy Company", place:"Australia Dairy Company, Hong Kong", lat:22.3052, lng:114.1718},
+      {day:1, name:"Kwun Yum Temple, Hung Hom", place:"Kwun Yum Temple Hung Hom", lat:22.3041, lng:114.1870},
+      {day:1, name:"Che Kung Temple", place:"Che Kung Temple Hong Kong", lat:22.3742, lng:114.1852},
+      {day:1, name:"Tai Wai", place:"Tai Wai Station Hong Kong", lat:22.3723, lng:114.1783},
+      {day:1, name:"Wong Tai Sin Temple", place:"Wong Tai Sin Temple Hong Kong", lat:22.3421, lng:114.1934},
+      {day:1, name:"Repulse Bay Shrine", place:"Kwun Yam Shrine Repulse Bay", lat:22.2362, lng:114.1954},
+      {day:1, name:"Avenue of Stars", place:"Avenue of Stars Hong Kong", lat:22.2932, lng:114.1722},
+      {day:2, name:"Hong Kong Disneyland", place:"Hong Kong Disneyland", lat:22.3130, lng:114.0412},
+      {day:3, name:"Star Ferry Pier, Tsim Sha Tsui", place:"Star Ferry Pier Tsim Sha Tsui", lat:22.2938, lng:114.1686},
+      {day:3, name:"Hollywood Road", place:"Hollywood Road Hong Kong", lat:22.2845, lng:114.1502},
+      {day:3, name:"Jenny Bakery, Tsim Sha Tsui", place:"Jenny Bakery Tsim Sha Tsui", lat:22.2988, lng:114.1722},
+      {day:3, name:"Hong Kong International Airport", place:"Hong Kong International Airport", lat:22.3080, lng:113.9185}
+    ];
+
+    const checklistGroups = {
+      "เอกสารและการเดินทาง": [
+        "หนังสือเดินทางและเอกสารเดินทาง",
+        "ตรวจสอบเที่ยวบิน UO735 / UO734 และอาคารผู้โดยสาร",
+        "บัตร Octopus หรือวิธีชำระค่าเดินทาง",
+        "ประกันเดินทางและข้อมูลติดต่อฉุกเฉิน"
+      ],
+      "ของใช้จำเป็น": [
+        "เสื้อแจ็กเก็ตหรือสเวตเตอร์",
+        "รองเท้าเดินสบายและถุงเท้าสำรอง",
+        "สายชาร์จและแบตเตอรี่สำรอง",
+        "ยาประจำตัวและของใช้ส่วนตัว"
+      ],
+      "ก่อนออกจากที่พัก": [
+        "ตรวจสอบพยากรณ์อากาศและประกาศการเดินทาง",
+        "ยืนยันเวลาเปิดวัด ร้านอาหาร และสวนสนุก",
+        "เตรียมเงินสด/บัตร และตรวจสอบแบตเตอรี่มือถือ",
+        "เช็กเอาต์และฝากกระเป๋าตามเวลาของโรงแรม"
+      ]
+    };
+
+    const mapsUrl = place =>
+      "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place);
+
+    const selector = document.getElementById("day-selector");
+    const dayContent = document.getElementById("day-content");
+    let activeDay = 1;
+
+    function renderDayButtons() {
+      selector.innerHTML = days.map(day => `
+        <button class="day-btn ${day.id === activeDay ? "active" : ""}" data-day="${day.id}">
+          <span>วันที่ ${day.id}</span><small>${day.date}</small>
+        </button>`).join("");
+      selector.querySelectorAll("[data-day]").forEach(button => {
+        button.addEventListener("click", () => {
+          activeDay = Number(button.dataset.day);
+          renderDayButtons();
+          renderDay();
+          if (map) showMapDay(activeDay);
+        });
+      });
+    }
+
+    function renderDay() {
+      const day = days.find(item => item.id === activeDay);
+      dayContent.innerHTML = `
+        <div class="day-heading">
+          <div><h2>${day.title}</h2><p>${day.date} · ${day.summary}</p></div>
+          <a class="map-link" target="_blank" rel="noopener" href="${mapsUrl(day.events[0].place)}">เปิด Google Maps ↗</a>
+        </div>
+        <div class="timeline">
+          ${day.events.map(event => `
+            <article class="card event">
+              <div class="event-top">
+                <div><div class="event-time">${event.time}</div><h3>${event.title}</h3></div>
+                <span class="tag">${event.type}</span>
+              </div>
+              <p>${event.desc}</p>
+              <div class="event-actions">
+                <a class="small-link" target="_blank" rel="noopener" href="${mapsUrl(event.place)}">📍 นำทาง</a>
+              </div>
+            </article>`).join("")}
+        </div>`;
+    }
+
+    // Main navigation
+    document.querySelectorAll(".nav-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach(item => item.classList.remove("active"));
+        document.querySelectorAll(".view").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById(button.dataset.view).classList.add("active");
+        if (button.dataset.view === "map-view") {
+          if (!map) initMap();
+          setTimeout(() => map.invalidateSize(), 100);
+        }
+      });
+    });
+
+    // Interactive map
+    let map;
+    let markers = [];
+    let selectedMapDay = 0;
+
+    function initMap() {
+      map = L.map("map", { scrollWheelZoom: false }).setView([22.32, 114.17], 11);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  subdomains: "abcd",
+  maxZoom: 19,
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+}).addTo(map);
+
+
+      locations.forEach(location => {
+        const marker = L.marker([location.lat, location.lng]).addTo(map);
+        marker.bindPopup(`
+          <strong>${location.name}</strong><br>
+          <a target="_blank" rel="noopener" href="${mapsUrl(location.place)}">เปิด Google Maps นำทาง ↗</a>
+        `);
+        marker._tripDay = location.day;
+        markers.push(marker);
+      });
+      renderMapFilters();
+      showMapDay(0);
+    }
+
+    function renderMapFilters() {
+      const filters = document.getElementById("map-filters");
+      filters.innerHTML = `
+        <strong style="margin-right:4px">แสดง:</strong>
+        <button class="filter-btn ${selectedMapDay === 0 ? "active" : ""}" data-map-day="0">ทุกวัน</button>
+        ${days.map(day => `<button class="filter-btn ${selectedMapDay === day.id ? "active" : ""}" data-map-day="${day.id}">วันที่ ${day.id}</button>`).join("")}`;
+      filters.querySelectorAll("[data-map-day]").forEach(button => {
+        button.addEventListener("click", () => showMapDay(Number(button.dataset.mapDay)));
+      });
+    }
+
+    function showMapDay(dayNumber) {
+      if (!map) return;
+      selectedMapDay = dayNumber;
+      markers.forEach(marker => {
+        const visible = dayNumber === 0 || marker._tripDay === dayNumber;
+        if (visible && !map.hasLayer(marker)) marker.addTo(map);
+        if (!visible && map.hasLayer(marker)) map.removeLayer(marker);
+      });
+      renderMapFilters();
+      const visibleMarkers = markers.filter(marker => dayNumber === 0 || marker._tripDay === dayNumber);
+      if (visibleMarkers.length) {
+        const group = L.featureGroup(visibleMarkers);
+        map.fitBounds(group.getBounds().pad(0.16), {maxZoom: 13});
+      }
+    }
+
+    // Checklist saved on this browser/device
+    const storageKey = "hk-trip-checklist-2026";
+    function getChecked() {
+      try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
+      catch { return {}; }
+    }
+
+    function renderChecklist() {
+      const checked = getChecked();
+      const container = document.getElementById("checklist-content");
+      let index = 0;
+      container.innerHTML = Object.entries(checklistGroups).map(([group, items]) => `
+        <section class="card check-group">
+          <h3>${group}</h3>
+          ${items.map(item => {
+            const id = "task-" + index++;
+            const isChecked = Boolean(checked[item]);
+            return `<label class="check-item ${isChecked ? "done" : ""}">
+              <input type="checkbox" data-item="${item.replaceAll('"', '&quot;')}" ${isChecked ? "checked" : ""}>
+              <span>${item}</span>
+            </label>`;
+          }).join("")}
+        </section>`).join("");
+
+      container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.addEventListener("change", () => {
+          const saved = getChecked();
+          saved[input.dataset.item] = input.checked;
+          localStorage.setItem(storageKey, JSON.stringify(saved));
+          renderChecklist();
+        });
+      });
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const boxes = [...document.querySelectorAll("#checklist-content input[type=checkbox]")];
+      const done = boxes.filter(box => box.checked).length;
+      document.getElementById("progress-text").textContent = `${done}/${boxes.length}`;
+      document.getElementById("progress-bar").style.width =
+        boxes.length ? `${done / boxes.length * 100}%` : "0%";
+    }
+
+    document.getElementById("reset-checklist").addEventListener("click", () => {
+      if (confirm("ต้องการล้างสถานะ Checklist ทั้งหมดหรือไม่?")) {
+        localStorage.removeItem(storageKey);
+        renderChecklist();
+      }
+    });
+
+    renderDayButtons();
+    renderDay();
+    renderChecklist();
+  </script>
+
+</body></html>
